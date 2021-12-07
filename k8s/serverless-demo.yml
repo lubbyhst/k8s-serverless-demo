@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: serverless
+  labels:
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/part-of: serverless-demo
+---
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: serverless-demo
+#  namespace: serverless
+#  labels:
+#    app: serverless-demo
+#spec:
+#  selector:
+#    matchLabels:
+#      octopusexport: OctopusExport
+#  revisionHistoryLimit: 5
+#  replicas: 1
+#  strategy:
+#    type: RollingUpdate
+#  template:
+#    metadata:
+#      labels:
+#        app: serverless-demo
+#        octopusexport: OctopusExport
+#    spec:
+#      containers:
+#        - name: serverless-demo
+#          image: 'lubiniecki/k8s-serverless-demo:1.0-SNAPSHOT'
+#          imagePullPolicy: Never
+#          ports:
+#            - name: web
+#              containerPort: 8080
+#              protocol: TCP
+#      affinity:
+#        podAntiAffinity:
+#          preferredDuringSchedulingIgnoredDuringExecution:
+#            - weight: 100
+#              podAffinityTerm:
+#                labelSelector:
+#                  matchExpressions:
+#                    - key: app
+#                      operator: In
+#                      values:
+#                        - web
+#                topologyKey: kubernetes.io/hostname
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: serverless-demo
+#  namespace: serverless
+#spec:
+#  selector:
+#    app: serverless-demo
+#  ports:
+#    - protocol: TCP
+#      port: 80
+#      targetPort: 8080
+#---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: serverless-demo
+  namespace: serverless
+spec:
+  template:
+    metadata:
+      annotations:
+        # Target 10 in-flight-requests per pod.
+        autoscaling.knative.dev/target: "1"
+        autoscaling.knative.dev/minScale: "1"
+    spec:
+      containers:
+        - image: dev.local/lubiniecki/k8s-serverless-demo:1.0-SNAPSHOT
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+              protocol: TCP
