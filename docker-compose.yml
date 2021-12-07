@@ -1,6 +1,6 @@
 version: "3.9"
 services:
   quarkus:
-    image: lubiniecki/k8s-serverless-demo:1.0-SNAPSHOT
+    image: demo/k8s-serverless-demo:1.0-SNAPSHOT
     ports:
       - "8080:8080"

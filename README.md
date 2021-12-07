@@ -4,6 +4,91 @@ This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
 
+## How To: Start k3s-cluster and serverless demo
+
+You can create an initial k3s cluster for testing with the included scripts under k3s-cluster. These should also work under linux.
+At first you have to install Multipass ([multipass](https://multipass.run/))
+
+1. Crate intial cluster with
+
+```bash
+chmod +x k3s-cluster/*
+./k3s-cluster/addCluster demo 1 1
+```
+
+Per default the cube.config will be wirtten to the folder ~/.kube/config. Existing configs will be overridden.
+2. get and rename cube config
+```bash
+./k3s-cluster/getKubeconfig demo && mv $HOME/.kube/config $HOME/.kube/config-serverless-demo
+```
+
+3. Install knative
+
+```bash
+chmod +x k8s/knative/knative_install.sh
+cd k8s/knative && ./knative_install.sh && cd ../..
+```
+
+Check if the endpoints are successfully binded with
+
+```bash
+kubectl --kubeconfig=$HOME/.kube/config-serverless-demo --namespace kourier-system get service kourier
+```
+
+The output should look like this:
+
+```http request
+NAME      TYPE           CLUSTER-IP     EXTERNAL-IP                 PORT(S)                      AGE
+kourier   LoadBalancer   10.43.20.145   192.168.64.7,192.168.64.8   80:31145/TCP,443:32158/TCP   45s
+```
+
+4. Build quarkus app container image
+
+```bash
+./mvnw clean package -Pnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true -Dquarkus.native.container-runtime=docker
+```
+5. Copy docker imges into cluster or push to private registry
+
+```bash
+chmod +x k3s-cluster/push_docker_image_to_cluster.sh
+./k3s-cluster/push_docker_image_to_cluster.sh
+```
+
+6. Deploy serverless demo
+```bash
+chmod +x k8s/deploy_serverless_demo.sh
+cd k8s && ./deploy_serverless_demo.sh && cd .. 
+```
+
+7. Get local IP of your cluster master
+
+```bash
+multipass info k3s-demo-master-0
+```
+
+8. add IP with hostname in /etc/hosts file
+```bash
+echo "192.168.64.7 serverless-demo.serverless.example.com" >> /etc/hosts
+```
+
+Now you can send a get request to the service:
+
+```http request
+http://serverless-demo.serverless.example.com/hello
+```
+
+To send massive load to the cluster. You could a tool like hey (hey)[https://github.com/rakyll/hey]
+
+```bash
+hey -z 30s -c 50 "http://serverless-demo.serverless.example.com/json"
+```
+
+With increasing the load. You can watch the increasing number of pods inside the cluster.
+
+```bash
+kubectl get pods -w -n serverless --kubeconfig=$HOME/.kube/config-serverless-demo
+```
+
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:

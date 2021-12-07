@@ -1,4 +1,4 @@
-package de.adesso;
+package com.github.lubbyhst;
 
 import io.quarkus.test.junit.NativeImageTest;
 

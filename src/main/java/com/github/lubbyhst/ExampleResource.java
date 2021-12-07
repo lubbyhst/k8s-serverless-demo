@@ -1,4 +1,4 @@
-package de.adesso;
+package com.github.lubbyhst;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
