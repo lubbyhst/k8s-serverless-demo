@@ -77,7 +77,7 @@ Now you can send a get request to the service:
 http://serverless-demo.serverless.example.com/hello
 ```
 
-To send massive load to the cluster. You could a tool like hey (hey)[https://github.com/rakyll/hey]
+To send massive load to the cluster. You could a tool like [hey](https://github.com/rakyll/hey)
 
 ```bash
 hey -z 30s -c 50 "http://serverless-demo.serverless.example.com/json"
