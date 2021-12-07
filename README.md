@@ -89,6 +89,17 @@ With increasing the load. You can watch the increasing number of pods inside the
 kubectl get pods -w -n serverless --kubeconfig=$HOME/.kube/config-serverless-demo
 ```
 
+## Stop or Purg the cluster
+
+```bash
+./k3s-cluster/purgeCluster demo
+```
+
+
+```bash
+./k3s-cluster/stopCluster demo
+```
+
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
