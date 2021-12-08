@@ -7,13 +7,13 @@ If you want to learn more about Quarkus, please visit its website: https://quark
 ## How To: Start k3s-cluster and serverless demo
 
 You can create an initial k3s cluster for testing with the included scripts under k3s-cluster. These should also work under linux.
-At first you have to install Multipass ([multipass](https://multipass.run/))
+At first, you have to install Multipass ([multipass](https://multipass.run/))
 
 1. Crate intial cluster with
 
 ```bash
 chmod +x k3s-cluster/*
-./k3s-cluster/addCluster demo 1 1
+cd k32-cluster && ./addCluster demo 1 1 && cd ..
 ```
 
 Per default the cube.config will be wirtten to the folder ~/.kube/config. Existing configs will be overridden.
@@ -29,7 +29,7 @@ chmod +x k8s/knative/knative_install.sh
 cd k8s/knative && ./knative_install.sh && cd ../..
 ```
 
-Check if the endpoints are successfully binded with
+Check if the endpoints are successfully bound with
 
 ```bash
 kubectl --kubeconfig=$HOME/.kube/config-serverless-demo --namespace kourier-system get service kourier
