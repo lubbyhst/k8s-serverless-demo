@@ -13,7 +13,7 @@ At first, you have to install Multipass ([multipass](https://multipass.run/))
 
 ```bash
 chmod +x k3s-cluster/*
-cd k32-cluster && ./addCluster demo 1 1 && cd ..
+cd k3s-cluster && ./addCluster demo 1 1 && cd ..
 ```
 
 Per default the cube.config will be wirtten to the folder ~/.kube/config. Existing configs will be overridden.
